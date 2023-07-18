@@ -1,6 +1,6 @@
 const router = require("express").Router(); // создали роутер
 
-router.get("/", (req, res) => {
+router.all("/", (req, res) => {
   return res.status(404).send({ message: "Неправильный путь" });
 });
 
