@@ -1,11 +1,11 @@
-const User = require("../models/user");
-const MissingError = require("../util/errors/MissingError");
-const { handleErrors } = require("../util/handleErrors");
+const User = require('../models/user');
+const MissingError = require('../util/errors/MissingError');
+const { handleErrors } = require('../util/handleErrors');
 
 function handleAndSendUser(user, res) {
   if (user === null) {
     return Promise.reject(
-      new MissingError("Запрашиваемый пользователь не найден")
+      new MissingError('Запрашиваемый пользователь не найден'),
     );
   }
   return res.send({ data: user });
@@ -13,9 +13,7 @@ function handleAndSendUser(user, res) {
 
 module.exports.getUsers = (req, res) => {
   User.find()
-    .then((users) => {
-      return res.send({ data: users });
-    })
+    .then((users) => res.send({ data: users }))
     .catch((err) => {
       handleErrors(res, err);
     });
@@ -23,9 +21,7 @@ module.exports.getUsers = (req, res) => {
 
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
-    .then((user) => {
-      return handleAndSendUser(user, res);
-    })
+    .then((user) => handleAndSendUser(user, res))
     .catch((err) => {
       handleErrors(res, err);
     });
@@ -35,9 +31,7 @@ module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
-    .then((user) => {
-      return res.send({ data: user });
-    })
+    .then((user) => res.send({ data: user }))
     .catch((err) => {
       handleErrors(res, err);
     });
@@ -49,9 +43,7 @@ module.exports.modifyUser = (req, res) => {
     runValidators: true,
     upsert: false,
   })
-    .then((user) => {
-      return handleAndSendUser(user, res);
-    })
+    .then((user) => handleAndSendUser(user, res))
     .catch((err) => {
       handleErrors(res, err);
     });
@@ -60,16 +52,14 @@ module.exports.modifyUser = (req, res) => {
 module.exports.modifyUserAvatar = (req, res) => {
   User.findByIdAndUpdate(
     req.user._id,
-    { avatar: req.body["avatar"] },
+    { avatar: req.body.avatar },
     {
       new: true,
       runValidators: true,
       upsert: false,
-    }
+    },
   )
-    .then((user) => {
-      return handleAndSendUser(user, res);
-    })
+    .then((user) => handleAndSendUser(user, res))
     .catch((err) => {
       handleErrors(res, err);
     });

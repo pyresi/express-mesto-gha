@@ -1,11 +1,11 @@
-const Card = require("../models/card");
-const MissingError = require("../util/errors/MissingError");
-const { handleErrors } = require("../util/handleErrors");
+const Card = require('../models/card');
+const MissingError = require('../util/errors/MissingError');
+const { handleErrors } = require('../util/handleErrors');
 
 function handleAndSendCard(card, res) {
   if (card === null) {
     return Promise.reject(
-      new MissingError("Запрашиваемая карточка не найдена")
+      new MissingError('Запрашиваемая карточка не найдена'),
     );
   }
   return res.send({ data: card });
@@ -13,9 +13,7 @@ function handleAndSendCard(card, res) {
 
 module.exports.getCards = (req, res) => {
   Card.find()
-    .then((cards) => {
-      return res.send({ data: cards });
-    })
+    .then((cards) => res.send({ data: cards }))
     .catch((err) => {
       handleErrors(res, err);
     });
@@ -23,9 +21,7 @@ module.exports.getCards = (req, res) => {
 
 module.exports.deleteCardById = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
-    .then((card) => {
-      return handleAndSendCard(card, res);
-    })
+    .then((card) => handleAndSendCard(card, res))
     .catch((err) => {
       handleErrors(res, err);
     });
@@ -36,9 +32,7 @@ module.exports.createCard = (req, res) => {
   const owner = req.user._id;
 
   Card.create({ link, name, owner })
-    .then((card) => {
-      return res.send({ data: card });
-    })
+    .then((card) => res.send({ data: card }))
     .catch((err) => {
       handleErrors(res, err);
     });
@@ -49,11 +43,9 @@ module.exports.likeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
-    { new: true }
+    { new: true },
   )
-    .then((card) => {
-      return handleAndSendCard(card, res);
-    })
+    .then((card) => handleAndSendCard(card, res))
     .catch((err) => {
       handleErrors(res, err);
     });
@@ -63,11 +55,9 @@ module.exports.dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
-    { new: true }
+    { new: true },
   )
-    .then((card) => {
-      return handleAndSendCard(card, res);
-    })
+    .then((card) => handleAndSendCard(card, res))
     .catch((err) => {
       handleErrors(res, err);
     });
