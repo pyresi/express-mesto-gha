@@ -1,7 +1,14 @@
 const User = require("../models/user");
+const MissingError = require("../util/errors/MissingError");
+const { handleErrors } = require("../util/handleErrors");
 
-function handleError(res) {
-  return res.status(500).send({ message: "Произошла ошибка" });
+function handleAndSendUser(user, res) {
+  if (user === null) {
+    return Promise.reject(
+      new MissingError("Запрашиваемый пользователь не найден")
+    );
+  }
+  return res.send({ data: user });
 }
 
 module.exports.getUsers = (req, res) => {
@@ -10,18 +17,17 @@ module.exports.getUsers = (req, res) => {
       res.send({ data: users });
     })
     .catch((err) => {
-      handleError(res);
+      handleErrors(res);
     });
 };
 
 module.exports.getUserById = (req, res) => {
-  console.log(req.params.userId);
   User.findById(req.params.userId)
     .then((user) => {
-      res.send({ data: user });
+      return handleAndSendUser(user, res);
     })
     .catch((err) => {
-      handleError(res);
+      handleErrors(res, err);
     });
 };
 
@@ -33,7 +39,7 @@ module.exports.createUser = (req, res) => {
       res.send({ data: user });
     })
     .catch((err) => {
-      handleError(res);
+      handleErrors(res, err);
     });
 };
 
@@ -44,10 +50,10 @@ module.exports.modifyUser = (req, res) => {
     upsert: false,
   })
     .then((user) => {
-      res.send({ data: user });
+      return handleAndSendUser(user, res);
     })
     .catch((err) => {
-      handleError(res);
+      handleErrors(res, err);
     });
 };
 
@@ -62,9 +68,9 @@ module.exports.modifyUserAvatar = (req, res) => {
     }
   )
     .then((user) => {
-      res.send({ data: user });
+      return handleAndSendUser(user, res);
     })
     .catch((err) => {
-      handleError(res);
+      handleErrors(res, err);
     });
 };
