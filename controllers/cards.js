@@ -14,7 +14,7 @@ function handleAndSendCard(card, res) {
 module.exports.getCards = (req, res) => {
   Card.find()
     .then((cards) => {
-      res.send({ data: cards });
+      return res.send({ data: cards });
     })
     .catch((err) => {
       handleErrors(res, err);
@@ -24,7 +24,7 @@ module.exports.getCards = (req, res) => {
 module.exports.deleteCardById = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
-      handleAndSendCard(card, res);
+      return handleAndSendCard(card, res);
     })
     .catch((err) => {
       handleErrors(res, err);
@@ -37,7 +37,7 @@ module.exports.createCard = (req, res) => {
 
   Card.create({ link, name, owner })
     .then((card) => {
-      res.send({ data: card });
+      return res.send({ data: card });
     })
     .catch((err) => {
       handleErrors(res, err);
@@ -45,13 +45,14 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.likeCard = (req, res) => {
+  // console.log(req);
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
     { new: true }
   )
     .then((card) => {
-      handleAndSendCard(card, res);
+      return handleAndSendCard(card, res);
     })
     .catch((err) => {
       handleErrors(res, err);
@@ -65,7 +66,7 @@ module.exports.dislikeCard = (req, res) => {
     { new: true }
   )
     .then((card) => {
-      handleAndSendCard(card, res);
+      return handleAndSendCard(card, res);
     })
     .catch((err) => {
       handleErrors(res, err);

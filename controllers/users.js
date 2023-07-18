@@ -14,10 +14,10 @@ function handleAndSendUser(user, res) {
 module.exports.getUsers = (req, res) => {
   User.find()
     .then((users) => {
-      res.send({ data: users });
+      return res.send({ data: users });
     })
     .catch((err) => {
-      handleErrors(res);
+      handleErrors(res, err);
     });
 };
 
@@ -36,7 +36,7 @@ module.exports.createUser = (req, res) => {
 
   User.create({ name, about, avatar })
     .then((user) => {
-      res.send({ data: user });
+      return res.send({ data: user });
     })
     .catch((err) => {
       handleErrors(res, err);
