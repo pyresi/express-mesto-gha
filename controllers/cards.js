@@ -1,7 +1,14 @@
 const Card = require("../models/card");
+const MissingError = require("../util/errors/MissingError");
+const { handleErrors } = require("../util/handleErrors");
 
-function handleError(res) {
-  return res.status(500).send({ message: "Произошла ошибка" });
+function handleAndSendCard(card, res) {
+  if (card === null) {
+    return Promise.reject(
+      new MissingError("Запрашиваемая карточка не найдена")
+    );
+  }
+  return res.send({ data: card });
 }
 
 module.exports.getCards = (req, res) => {
@@ -10,17 +17,17 @@ module.exports.getCards = (req, res) => {
       res.send({ data: cards });
     })
     .catch((err) => {
-      handleError(res);
+      handleErrors(res, err);
     });
 };
 
 module.exports.deleteCardById = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
-      res.send({ data: card });
+      handleAndSendCard(card, res);
     })
     .catch((err) => {
-      handleError(res);
+      handleErrors(res, err);
     });
 };
 
@@ -33,34 +40,34 @@ module.exports.createCard = (req, res) => {
       res.send({ data: card });
     })
     .catch((err) => {
-      handleError(res);
+      handleErrors(res, err);
     });
 };
 
 module.exports.likeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
-    { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
+    { $addToSet: { likes: req.user._id } },
     { new: true }
   )
     .then((card) => {
-      res.send({ data: card });
+      handleAndSendCard(card, res);
     })
     .catch((err) => {
-      handleError(res);
+      handleErrors(res, err);
     });
 };
 
 module.exports.dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
-    { $pull: { likes: req.user._id } }, // убрать _id из массива
+    { $pull: { likes: req.user._id } },
     { new: true }
   )
     .then((card) => {
-      res.send({ data: card });
+      handleAndSendCard(card, res);
     })
     .catch((err) => {
-      handleError(res);
+      handleErrors(res, err);
     });
 };
