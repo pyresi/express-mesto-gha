@@ -34,7 +34,10 @@ app.listen(PORT, () => {
 });
 
 const userRouter = require("./routes/users"); // импортируем роутер
-app.use("/", userRouter); // запускаем
+app.use("/users", userRouter); // запускаем
 
 const cardRouter = require("./routes/cards"); // импортируем роутер
-app.use("/", cardRouter); // запускаем
+app.use("/cards", cardRouter); // запускаем
+
+const otherRouter = require("./routes/other");
+app.use("/*", otherRouter);
