@@ -5,9 +5,10 @@
   "private": true,
   "dependencies": {
     "body-parser": "^1.20.2",
-
     "express": "^4.18.2",
-    "mongoose": "^7.3.4"
+    "helmet": "^7.0.0",
+    "mongoose": "^7.3.4",
+    "validator": "^13.9.0"
   },
   "scripts": {
     "start": "node app.js",
@@ -15,22 +16,10 @@
     "lint": "npx eslint ."
   },
   "eslintConfig": {},
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
   "devDependencies": {
+    "eslint": "^8.45.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.27.5",
-    "eslint": "^8.45.0",
     "nodemon": "^3.0.1"
   }
 }

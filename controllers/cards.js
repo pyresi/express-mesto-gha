@@ -32,7 +32,7 @@ module.exports.createCard = (req, res) => {
   const owner = req.user._id;
 
   Card.create({ link, name, owner })
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.statsus(201).send({ data: card }))
     .catch((err) => {
       handleErrors(res, err);
     });
