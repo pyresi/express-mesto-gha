@@ -5,7 +5,7 @@ const { login } = require('./controllers/login');
 const { createUser } = require('./controllers/users');
 const { auth } = require('./middlewares/auth');
 const { handleErrors } = require('./util/handleErrors');
-const { celebrate, Joi } = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
 // Слушаем 3000 порт
 const { PORT = 3000, DB_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
 
@@ -57,6 +57,8 @@ app.use('/cards', cardRouter); // запускаем
 const otherRouter = require('./routes/other');
 
 app.use('/*', otherRouter);
+
+app.use(errors());
 
 
 app.use((err, req, res, next) => {
