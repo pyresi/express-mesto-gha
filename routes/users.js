@@ -12,14 +12,13 @@ const {
 router.get('/', getUsers);
 router.get('/:userId', celebrate({
   body: Joi.object().keys({
-    _id: Joi.string().required(),
+    _id: Joi.string().required().pattern(/[0-9a-z]{24}/),
   }),
 }), getUserById);
 // router.post('/', createUser);
 
 router.patch('/me', celebrate({
   body: Joi.object().keys({
-    _id: Joi.string().required(),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30)
   }),
@@ -29,8 +28,7 @@ router.get('/me', getUserInfo);
 
 router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    _id: Joi.string().required(),
-    link: Joi.string().required()
+    link: Joi.string().required().pattern(/^(http:\/\/|https:\/\/)(www)?[0-9a-zA-Z-._~:/?#[\]@!$&'()*+,;=]+#?$/)
   }),
 }), modifyUserAvatar);
 
