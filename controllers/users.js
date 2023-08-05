@@ -39,8 +39,8 @@ module.exports.createUser = (req, res, next) => {
   bcrypt.hash(password, 10)
     .then(hash => User.create({ name, about, avatar, email, password: hash }))
     .then(user => {
-      delete user['password'];
-      return res.status(201).send({ data: user })
+      const { ['password']: password, ...rest } = user;
+      return res.status(201).send({ data: rest });
     })
     .catch((err) => {
       if (err.code === 11000) {
