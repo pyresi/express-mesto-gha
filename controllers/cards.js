@@ -1,6 +1,6 @@
 const Card = require('../models/card');
 const MissingError = require('../util/errors/MissingError');
-const { handleErrors } = require('../util/handleErrors');
+const BadRequestError = require('../util/errors/BadRequestError');
 
 function handleAndSendCard(card, res) {
   if (card === null) {
@@ -11,15 +11,13 @@ function handleAndSendCard(card, res) {
   return res.send({ data: card });
 }
 
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   Card.find()
     .then((cards) => res.send({ data: cards }))
-    .catch((err) => {
-      handleErrors(res, err);
-    });
+    .catch(next);
 };
 
-module.exports.deleteCardById = (req, res) => {
+module.exports.deleteCardById = (req, res, next) => {
   Cards.findById(req.params.cardId).then((card) => {
     if (card === null) {
       return Promise.reject(
@@ -31,27 +29,23 @@ module.exports.deleteCardById = (req, res) => {
       return Card.findByIdAndRemove(req.params.cardId)
     }
     else {
-      throw "Bad user";
+      throw BadRequestError('Невозможно удалить чужую карточку');
     }
   })
     .then((card) => handleAndSendCard(card, res))
-    .catch((err) => {
-      handleErrors(res, err);
-    });
+    .catch(next);
 };
 
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { link, name } = req.body;
   const owner = req.user._id;
 
   Card.create({ link, name, owner })
     .then((card) => res.status(201).send({ data: card }))
-    .catch((err) => {
-      handleErrors(res, err);
-    });
+    .catch(next);
 };
 
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   // console.log(req);
   Card.findByIdAndUpdate(
     req.params.cardId,
@@ -59,19 +53,15 @@ module.exports.likeCard = (req, res) => {
     { new: true },
   )
     .then((card) => handleAndSendCard(card, res))
-    .catch((err) => {
-      handleErrors(res, err);
-    });
+    .catch(next);
 };
 
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
     { new: true },
   )
     .then((card) => handleAndSendCard(card, res))
-    .catch((err) => {
-      handleErrors(res, err);
-    });
+    .catch(next);
 };
