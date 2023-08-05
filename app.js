@@ -5,6 +5,7 @@ const { login } = require('./controllers/login');
 const { createUser } = require('./controllers/users');
 const { auth } = require('./middlewares/auth');
 const { handleErrors } = require('./util/handleErrors');
+const { celebrate, Joi } = require('celebrate');
 // Слушаем 3000 порт
 const { PORT = 3000, DB_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
 
@@ -26,8 +27,22 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required(),
+    password: Joi.string().required()
+  }),
+}), login);
+
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required(),
+    password: Joi.string().required(),
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().min(2).max(30)
+  })
+}), createUser);
 
 app.use(auth);
 
