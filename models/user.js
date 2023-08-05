@@ -37,11 +37,6 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Поле "password" должно быть заполнено'],
     minlength: 8,
     select: false,
-    validate: {
-      validator: (v) => validator.isPassword(v),
-      message: "Некорректный password"
-    }
-
   }
 }, { versionKey: false });
 
