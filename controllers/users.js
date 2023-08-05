@@ -1,8 +1,7 @@
 const User = require('../models/user');
-const AuthorizationError = require('../util/errors/AuthorizationError');
+const DuplicationError = require('../util/errors/DuplicationError');
 const MissingError = require('../util/errors/MissingError');
 
-const { handleErrors } = require('../util/handleErrors');
 const bcrypt = require('bcryptjs');
 
 function handleAndSendUser(user, res) {
@@ -44,9 +43,9 @@ module.exports.createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.code === 11000) {
-        next(new AuthorizationError('Ошибка авторизации'));
+        return next(new DuplicationError('Ошибка авторизации: такой email уже существует'));
       }
-      next(err);
+      return next(err);
     }
     );
 };

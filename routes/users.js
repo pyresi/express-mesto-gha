@@ -9,10 +9,12 @@ const {
   getUserInfo
 } = require('../controllers/users');
 
+router.get('/me', getUserInfo);
 router.get('/', getUsers);
+
 router.get('/:userId', celebrate({
-  body: Joi.object().keys({
-    _id: Joi.string().required().pattern(/[0-9a-z]{24}/),
+  params: Joi.object().keys({
+    userId: Joi.string().required().hex().length(24),
   }),
 }), getUserById);
 // router.post('/', createUser);
@@ -24,11 +26,9 @@ router.patch('/me', celebrate({
   }),
 }), modifyUser);
 
-router.get('/me', getUserInfo);
-
 router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    link: Joi.string().required().pattern(/^(http:\/\/|https:\/\/)(www)?[0-9a-zA-Z-._~:/?#[\]@!$&'()*+,;=]+#?$/)
+    avatar: Joi.string().required().pattern(/^(http:\/\/|https:\/\/)(www)?[0-9a-zA-Z-._~:/?#[\]@!$&'()*+,;=]+#?$/)
   }),
 }), modifyUserAvatar);
 
