@@ -40,7 +40,7 @@ app.post('/signup', celebrate({
     password: Joi.string().required(),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().min(2).max(30)
+    avatar: Joi.string().pattern(new RegExp('^http[a-zA-Z0-9]{3,30}$')).min(2).max(30)
   })
 }), createUser);
 
