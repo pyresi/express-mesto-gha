@@ -29,16 +29,22 @@ module.exports.deleteCardById = (req, res, next) => {
       return Card.findByIdAndRemove(req.params.cardId)
     }
     else {
-      throw BadRequestError('Невозможно удалить чужую карточку');
+      throw new BadRequestError('Невозможно удалить чужую карточку');
     }
   })
     .then((card) => handleAndSendCard(card, res))
-    .catch(next);
+    .catch((err) => {
+      console.log(err);
+      next(err);
+    });
 };
 
 module.exports.createCard = (req, res, next) => {
+  console.log('kek');
   const { link, name } = req.body;
+
   const owner = req.user._id;
+
 
   Card.create({ link, name, owner })
     .then((card) => res.status(201).send({ data: card }))

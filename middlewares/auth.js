@@ -1,6 +1,7 @@
 // middlewares/auth.js
 
 const jwt = require('jsonwebtoken');
+const AuthorizationError = require('../util/errors/AuthorizationError');
 
 module.exports.auth = (req, res, next) => {
   const { authorization } = req.headers;
@@ -17,9 +18,10 @@ module.exports.auth = (req, res, next) => {
   try {
     payload = jwt.verify(token, 'some-secret-key');
   } catch (err) {
-    return res
-      .status(401)
-      .send({ message: 'Необходима авторизация' });
+
+    return next(new AuthorizationError('Необходима авторизация'));
+    // .status(401)
+    // .send({ message  : 'Необходима авторизация' });
   }
 
   req.user = payload; // записываем пейлоуд в объект запроса
