@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const MissingError = require('../util/errors/MissingError');
 const { handleErrors } = require('../util/handleErrors');
+const bcrypt = require('bcryptjs');
 
 function handleAndSendUser(user, res) {
   if (user === null) {
@@ -9,6 +10,14 @@ function handleAndSendUser(user, res) {
     );
   }
   return res.send({ data: user });
+}
+
+module.exports.getUserInfo = (req, res) => {
+  User.findById(req.user._id)
+    .then((users) => res.send({ data: users }))
+    .catch((err) => {
+      handleErrors(res, err);
+    });
 }
 
 module.exports.getUsers = (req, res) => {
@@ -28,10 +37,10 @@ module.exports.getUserById = (req, res) => {
 };
 
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-
-  User.create({ name, about, avatar })
-    .then((user) => res.status(201).send({ data: user }))
+  const { name, about, avatar, email, password } = req.body;
+  bcrypt.hash(password, 10)
+    .then(hash => User.create({ name, about, avatar, email, password: hash }))
+    .then(user => res.status(201).send({ data: user }))
     .catch((err) => {
       handleErrors(res, err);
     });

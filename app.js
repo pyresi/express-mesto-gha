@@ -1,6 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+const { login } = require('./controllers/login');
+const { createUser } = require('./controllers/users');
+const { auth } = require('./middlewares/auth');
 // Слушаем 3000 порт
 const { PORT = 3000, DB_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
 
@@ -16,18 +19,16 @@ const bodyParser = require('body-parser');
 
 app.use(bodyParser.json()); // для собирания JSON-формата
 app.use(bodyParser.urlencoded({ extended: true })); // для приёма веб-страниц внутри POST-запроса
-app.use((req, res, next) => {
-  req.user = {
-    _id: '64b4dd78b3968e28b8f6c84f', // вставьте сюда _id созданного в предыдущем пункте пользователя
-  };
-
-  next();
-});
 
 app.listen(PORT, () => {
   // Если всё работает, консоль покажет, какой порт приложение слушает
   console.log(`App listening on port ${PORT}`);
 });
+
+app.post('/signin', login);
+app.post('/signup', createUser);
+
+app.use(auth);
 
 const userRouter = require('./routes/users');
 // импортируем роутер

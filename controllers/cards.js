@@ -20,7 +20,20 @@ module.exports.getCards = (req, res) => {
 };
 
 module.exports.deleteCardById = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  Cards.findById(req.params.cardId).then((card) => {
+    if (card === null) {
+      return Promise.reject(
+        new MissingError('Запрашиваемая карточка не найдена'),
+      );
+    }
+
+    if (card.owner._id === req.user._id) {
+      return Card.findByIdAndRemove(req.params.cardId)
+    }
+    else {
+      throw "Bad user";
+    }
+  })
     .then((card) => handleAndSendCard(card, res))
     .catch((err) => {
       handleErrors(res, err);
