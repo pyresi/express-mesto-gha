@@ -17,10 +17,8 @@ mongoose
     useUnifiedTopology: true,
   });
 
-const bodyParser = require('body-parser');
-
-app.use(bodyParser.json()); // для собирания JSON-формата
-app.use(bodyParser.urlencoded({ extended: true })); // для приёма веб-страниц внутри POST-запроса
+app.use(express.json()); // для собирания JSON-формата
+app.use(express.urlencoded({ extended: true })); // для приёма веб-страниц внутри POST-запроса
 
 app.listen(PORT, () => {
   // Если всё работает, консоль покажет, какой порт приложение слушает
