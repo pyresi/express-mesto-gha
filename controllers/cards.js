@@ -1,6 +1,7 @@
 const Card = require('../models/card');
 const MissingError = require('../util/errors/MissingError');
-const BadRequestError = require('../util/errors/BadRequestError');
+// const BadRequestError = require('../util/errors/BadRequestError');
+const ForbiddenError = require('../util/errors/ForbiddenError');
 
 function handleAndSendCard(card, res) {
   if (card === null) {
@@ -30,7 +31,7 @@ module.exports.deleteCardById = (req, res, next) => {
         return Card.findByIdAndRemove(req.params.cardId)
       }
       else {
-        throw new BadRequestError('Невозможно удалить чужую карточку');
+        return Promise.reject(new ForbiddenError('Невозможно удалить чужую карточку'));
       }
     })
     .then((card) => handleAndSendCard(card, res))
