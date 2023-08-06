@@ -1,6 +1,5 @@
 // controllers/users.js
 const User = require('../models/user');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken'); // импортируем модуль jsonwebtoken
 const AuthorizationError = require('../util/errors/AuthorizationError');
 

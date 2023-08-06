@@ -14,11 +14,13 @@ const cardSchema = new mongoose.Schema({
   },
   owner: {
     type: mongoose.Types.ObjectId,
+    ref: 'User',
     requited: [true, 'Поле "owner" должно быть заполнено'],
   },
   likes: [
     {
       type: mongoose.Types.ObjectId,
+      ref: 'User',
       default: [],
     },
   ],
