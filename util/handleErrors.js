@@ -14,6 +14,5 @@ module.exports.handleErrors = (res, err) => {
   } else if (err.name === 'DuplicationError') {
     return res.status(DUPLICATE_ERROR_CODE).send({ message: err.message });
   }
-
   return res.status(DEFAULT_ERROR_CODE).send({ message: 'Ошибка. Что-то пошло не так.' });
 };

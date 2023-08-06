@@ -18,29 +18,28 @@ module.exports.getCards = (req, res, next) => {
 };
 
 module.exports.deleteCardById = (req, res, next) => {
-  Cards.findById(req.params.cardId).then((card) => {
-    if (card === null) {
-      return Promise.reject(
-        new MissingError('Запрашиваемая карточка не найдена'),
-      );
-    }
+  Card.findById(req.params.cardId)
+    .then((card) => {
+      if (card === null) {
+        return Promise.reject(
+          new MissingError('Запрашиваемая карточка не найдена'),
+        );
+      }
 
-    if (card.owner._id === req.user._id) {
-      return Card.findByIdAndRemove(req.params.cardId)
-    }
-    else {
-      throw new BadRequestError('Невозможно удалить чужую карточку');
-    }
-  })
+      if (card.owner.toString() === req.user._id) {
+        return Card.findByIdAndRemove(req.params.cardId)
+      }
+      else {
+        throw new BadRequestError('Невозможно удалить чужую карточку');
+      }
+    })
     .then((card) => handleAndSendCard(card, res))
     .catch((err) => {
-      console.log(err);
       next(err);
     });
 };
 
 module.exports.createCard = (req, res, next) => {
-  console.log('kek');
   const { link, name } = req.body;
 
   const owner = req.user._id;
