@@ -1,6 +1,5 @@
 const Card = require('../models/card');
 const MissingError = require('../util/errors/MissingError');
-// const BadRequestError = require('../util/errors/BadRequestError');
 const ForbiddenError = require('../util/errors/ForbiddenError');
 
 function handleAndSendCard(card, res) {
