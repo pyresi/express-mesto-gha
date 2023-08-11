@@ -11,16 +11,20 @@ const cardSchema = new mongoose.Schema({
   link: {
     type: String,
     required: [true, 'Поле "link" должно быть заполнено'],
+    validate: {
+      validator: (v) => validator.isURL(v),
+      message: 'Некорректный URL',
+    },
   },
   owner: {
     type: mongoose.Types.ObjectId,
-    ref: 'User',
+    ref: 'user',
     requited: [true, 'Поле "owner" должно быть заполнено'],
   },
   likes: [
     {
       type: mongoose.Types.ObjectId,
-      ref: 'User',
+      ref: 'user',
       default: [],
     },
   ],

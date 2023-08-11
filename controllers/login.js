@@ -17,8 +17,5 @@ module.exports.login = (req, res, next) => {
 
       res.send({ token });
     })
-    .catch((err) => {
-      // ошибка аутентификации
-      return next(new AuthorizationError('Неверный email или пароль'));
-    });
+    .catch(next);
 };
